@@ -151,6 +151,7 @@ class cifar100vgg:
         maxepoches = 250
         learning_rate = 0.1
         lr_decay = 1e-6
+        lr_drop = 20
 
         # The data, shuffled and split between train and test sets:
         (x_train, y_train), (x_test, y_test) = cifar100.load_data()
@@ -161,7 +162,10 @@ class cifar100vgg:
         y_train = keras.utils.to_categorical(y_train, self.num_classes)
         y_test = keras.utils.to_categorical(y_test, self.num_classes)
 
-        lrf = learning_rate
+
+        def lr_scheduler(epoch):
+            return learning_rate * (0.5 ** (epoch // lr_drop))
+        reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
 
 
         #data augmentation
@@ -182,24 +186,17 @@ class cifar100vgg:
 
 
         #optimization details
-        sgd = optimizers.SGD(lr=lrf, decay=lr_decay, momentum=0.9, nesterov=True)
+        sgd = optimizers.SGD(lr=learning_rate, decay=lr_decay, momentum=0.9, nesterov=True)
         model.compile(loss='categorical_crossentropy', optimizer=sgd,metrics=['accuracy'])
 
 
         # training process in a for loop with learning rate drop every 25 epoches.
 
-        for epoch in range(1,maxepoches):
-
-            if epoch%25==0 and epoch>0:
-                lrf/=2
-                sgd = optimizers.SGD(lr=lrf, decay=lr_decay, momentum=0.9, nesterov=True)
-                model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-
-            historytemp = model.fit_generator(datagen.flow(x_train, y_train,
-                                             batch_size=batch_size),
-                                steps_per_epoch=x_train.shape[0] // batch_size,
-                                epochs=epoch,
-                                validation_data=(x_test, y_test),initial_epoch=epoch-1)
+        historytemp = model.fit_generator(datagen.flow(x_train, y_train,
+                                         batch_size=batch_size),
+                            steps_per_epoch=x_train.shape[0] // batch_size,
+                            epochs=maxepoches,
+                            validation_data=(x_test, y_test),callbacks=[reduce_lr],verbose=2)
         model.save_weights('cifar100vgg.h5')
         return model
 
