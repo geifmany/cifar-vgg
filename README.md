@@ -7,8 +7,8 @@ The CIFAR-10 reaches a validation accuracy of 93.56%
 CIFAR-100 reaches validation accuracy of 70.48%.
 On instantiation the model can either be trained or loaded from previous saved weight file.
 
-[cifar-100 weights](https://drive.google.com/open?id=0B4odNGNGJ56qTEdnT1RjTU44Zms)
-[cifar-10 weights](https://drive.google.com/open?id=0B4odNGNGJ56qVW9JdkthbzBsX28)
+[cifar-100 weights](https://drive.google.com/file/d/0B4odNGNGJ56qTEdnT1RjTU44Zms/view?usp=sharing&resourcekey=0-1cQT1h4rx1QVuYsnZNvtKw)
+[cifar-10 weights](https://drive.google.com/file/d/0B4odNGNGJ56qVW9JdkthbzBsX28/view?usp=sharing&resourcekey=0-4S027Hj5jKjZluUe4rt8IA)
 
 
 References:
